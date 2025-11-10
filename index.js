@@ -31,8 +31,14 @@ async function run() {
         const db = client.db('bookHaven');
         const bookCollection = db.collection('books')
 
-        app.get('/books', async(req, res)=>{
+        app.get('/allBooks', async(req, res) =>{
             const cursor = bookCollection.find();
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
+        app.get('/books', async(req, res)=>{
+            const cursor = bookCollection.find().limit(6);
             const result = await cursor.toArray();
             res.send(result)
         })
