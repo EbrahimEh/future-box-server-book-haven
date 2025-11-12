@@ -8,8 +8,7 @@ const port = process.env.PORT || 3000;
 app.use(cors())
 app.use(express.json())
 
-// BookHaven
-// fxqvmfm1J7HWs7pU
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0bookhaven.hdkwdsj.mongodb.net/?appName=Cluster0BookHaven`;
 
 const client = new MongoClient(uri, {
