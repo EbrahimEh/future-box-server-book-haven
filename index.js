@@ -33,50 +33,60 @@ async function run() {
         const usersCollection = db.collection('users')
 
         //user
-        app.post('/users', async(req, res) =>{
+        app.post('/users', async (req, res) => {
             const newUser = req.body;
             const email = req.body.email;
-            const query = {email: email}
+            const query = { email: email }
 
             const existingUser = await usersCollection.findOne(query)
-            if(existingUser){
-                res.send({message: 'user already exist'})
+            if (existingUser) {
+                res.send({ message: 'user already exist' })
             }
-            else{
+            else {
                 const result = await usersCollection.insertOne(newUser)
                 res.send(result)
             }
         })
 
-        app.get('/allBooks', async(req, res) =>{
+        app.get('/allBooks', async (req, res) => {
             const cursor = bookCollection.find();
             const result = await cursor.toArray()
             res.send(result)
         })
 
-        app.get('/books', async(req, res)=>{
+        app.get('/mybooks/:email', async (req, res) => {
+            
+                const email = req.params.email;
+                const query = { userEmail: email };
+                const cursor = bookCollection.find(query);
+                const result = await cursor.toArray();
+                res.json(result);
+           
+        });
+
+        app.get('/books', async (req, res) => {
             const cursor = bookCollection.find().limit(6);
             const result = await cursor.toArray();
             res.send(result)
         })
 
-        app.get('/allBooks/:id', async(req, res)=>{
+        app.get('/allBooks/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             result = await bookCollection.findOne(query)
             res.send(result)
         })
 
-        app.post('/books', async(req, res)=>{
+        app.post('/books', async (req, res) => {
             const newBook = req.body;
             const result = await bookCollection.insertOne(newBook)
             res.send(result)
         })
 
-        app.patch('/books/:id', async(req, res)=>{
+        app.patch('/books/:id', async (req, res) => {
             const id = req.params.id;
             const updatedBook = req.body;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const update = {
                 $set: {
                     name: updatedBook.name,
@@ -87,9 +97,9 @@ async function run() {
             res.send(result)
         })
 
-        app.delete('/books/:id', async(req, res)=>{
+        app.delete('/books/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const result = await bookCollection.deleteOne(query)
             res.send(result)
         })
