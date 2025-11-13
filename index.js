@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 async function run() {
     try {
-        // await client.connect();
+        await client.connect();
 
         //
         const db = client.db('bookHaven');
@@ -55,13 +55,13 @@ async function run() {
         })
 
         app.get('/mybooks/:email', async (req, res) => {
-            
-                const email = req.params.email;
-                const query = { userEmail: email };
-                const cursor = bookCollection.find(query);
-                const result = await cursor.toArray();
-                res.json(result);
-           
+
+            const email = req.params.email;
+            const query = { userEmail: email };
+            const cursor = bookCollection.find(query);
+            const result = await cursor.toArray();
+            res.json(result);
+
         });
 
         app.get('/books', async (req, res) => {
@@ -87,12 +87,18 @@ async function run() {
             const id = req.params.id;
             const updatedBook = req.body;
             const query = { _id: new ObjectId(id) }
+
             const update = {
                 $set: {
-                    name: updatedBook.name,
-                    price: updatedBook.price
+                    title: updatedBook.title,
+                    author: updatedBook.author,
+                    genre: updatedBook.genre,
+                    rating: updatedBook.rating,
+                    summary: updatedBook.summary,
+                    coverImage: updatedBook.coverImage
                 }
             }
+
             const result = await bookCollection.updateOne(query, update)
             res.send(result)
         })
@@ -106,7 +112,7 @@ async function run() {
 
 
 
-        // await client.db("admin").command({ ping: 1 });
+        await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     }
     finally {
